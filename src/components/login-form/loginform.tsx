@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
+import { useRouter } from 'next/navigation';
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -38,12 +39,13 @@ export function LoginForm({
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
     const { signIn } = useAuth();
+  const router = useRouter()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: "john@mail.com",
+      password: "changeme",
     },
   })
 
@@ -51,7 +53,15 @@ export function LoginForm({
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
 
-    signIn(values.email, values.password);
+    try {
+      signIn(values.email, values.password);
+      router.push('/users')
+    } catch(err) {
+      form.setError('root', {
+        type: "server",
+        message: 'Something went wrong!',
+      });
+    }
   }
 
 
@@ -100,6 +110,7 @@ export function LoginForm({
                   </FormItem>
           )}
         />
+        <div></div>
         <Button type="submit">Submit</Button>
       </form>
     </Form>

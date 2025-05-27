@@ -111,7 +111,21 @@ export const  AuthProvider: FC<AuthProviderProps> = (props) => {
         try {
             const accessToken = globalThis.localStorage.getItem('access_token');
             if (accessToken) {
-                console.log('YYY');
+                 const userResponse = await fetch("https://api.escuelajs.co/api/v1/auth/profile", {
+                        method: 'GET',
+                        headers: {
+                            Authorization: 'Bearer ' + accessToken
+                        }
+                    });
+                    const userResult = await userResponse.json();
+                    globalThis.localStorage.setItem('user', JSON.stringify(userResult));
+
+                    dispatch({
+                        type: ActionTypes.SIGN_IN,
+                        payload: {
+                            user: userResult
+                        }
+                    });
             } else {
                  dispatch({
                     type: ActionTypes.INITIALIZE,
@@ -139,26 +153,43 @@ export const  AuthProvider: FC<AuthProviderProps> = (props) => {
 
     const signIn = useCallback(async (email: string, password: string): Promise<void> => {
     
-    const myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+        const myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
 
-    const raw = JSON.stringify({
-        "email": email,
-        "password": password,
-    });
+        const raw = JSON.stringify({
+            "email": email,
+            "password": password,
+        });
 
-    const requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: raw,
-    };
+        const requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: raw,
+        };
 
-    fetch("https://api.escuelajs.co/api/v1/auth/login", requestOptions)
-        .then((response) => response.json())
-        .then((result) => console.log(result))
-        .catch((error) => console.error(error));
+        // get token
+        const response = await fetch("https://api.escuelajs.co/api/v1/auth/login", requestOptions);
+        const result = await response.json();
+        globalThis.localStorage.setItem('access_token', result?.access_token);
 
-}, [dispatch])
+        // get connected user
+        const userResponse = await fetch("https://api.escuelajs.co/api/v1/auth/profile", {
+            method: 'GET',
+            headers: {
+                Authorization: 'Bearer ' + result?.access_token
+            }
+        });
+        const userResult = await userResponse.json();
+        globalThis.localStorage.setItem('user', JSON.stringify(userResult));
+
+        dispatch({
+            type: ActionTypes.SIGN_IN,
+            payload: {
+                user: userResult
+            }
+        });
+    
+    }, [dispatch]);
 
  const signOut  = useCallback(async (): Promise<void> => {
      console.log('test')
