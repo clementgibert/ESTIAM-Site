@@ -35,4 +35,8 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
+QR35, BA283, AF20, JT41 (y'en a bien plus, ce sont des vols d'avions depuis l'API en tant réel.)
+
 Clé_API_Avion: 243b91eb54b868554013811a3ee560b0;
+
+Tout d'abord il faut se connecter afin de pouvoir acceder aux pages users et flight sur la page user il est possible d'ajouter ou de supprimer un ou des utilisateurs. Pour trouver les vols on utilise l'API AviationStack. Pour voir les vols il faut taper le code OACI d'un compagnie et le numéro de vol pour voir si ce vol existe. Le test unitaire avec Jest permet de verifier si les tags des images existent sur la page d'acceuil.
