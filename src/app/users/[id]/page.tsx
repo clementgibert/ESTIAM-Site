@@ -3,6 +3,7 @@
 import { User } from "@/types/user";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from 'react';
+import { AuthContext } from "@/contexts/jwt-context";
 import {
   Card,
   CardContent,

@@ -12,26 +12,30 @@ export interface AuthGuardProps {
 
 export function AuthGuard({ children }: AuthGuardProps): React.JSX.Element | null {
     const router = useRouter();
-    const {isAuthenticated} = useAuth();
+    const {isAuthenticated, isInitialized} = useAuth();
 
     const [checked, setChecked] = useState(false);
 
      const check = useCallback(() => {
+        if (!isInitialized) return;
+        console.log(isAuthenticated)
         if (isAuthenticated) {
             // Do stuff
+            //console.log("IDENTIFIED")
         } else {
+            //console.log("NON IDENTIFIED")
             router.replace('/login');
         }
 
         setChecked(true);
-    }, [isAuthenticated, router]);
+    }, [isAuthenticated, isInitialized, router]);
 
     useEffect(() => {
-        check();
-        // setChecked(true);
-    }, []);
+        check()
+        //setChecked(true);
+    }, [check]);
 
-    if (!checked) {
+    if (!checked || !isInitialized) {
         return null;
     }
 

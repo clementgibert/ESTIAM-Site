@@ -7,7 +7,7 @@ import {
   SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/layout/app-sidebar'
-import { AuthProvider } from "@/contexts/jwt-context";
+import { AuthProvider, AuthConsumer } from "@/contexts/jwt-context";
 import { AuthGuard } from "@/components/auth/auth-guard";
 
 

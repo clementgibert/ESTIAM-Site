@@ -38,7 +38,7 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-    const { signIn } = useAuth();
+  const { signIn } = useAuth();
   const router = useRouter()
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -49,12 +49,12 @@ export function LoginForm({
     },
   })
 
-   function onSubmit(values: z.infer<typeof formSchema>) {
+   async function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
 
     try {
-      signIn(values.email, values.password);
+      await signIn(values.email, values.password);
       router.push('/users')
     } catch(err) {
       form.setError('root', {

@@ -65,9 +65,6 @@ const handlers : Record<ActionTypes, Handler> = {
             ...state,
             isAuthenticated:true,
             user,
-
-          
-
         };
     },
 
@@ -76,7 +73,6 @@ const handlers : Record<ActionTypes, Handler> = {
             ...state,
             isAuthenticated:false,
             user: null,
-
         };
     }
 };
@@ -110,6 +106,7 @@ export const  AuthProvider: FC<AuthProviderProps> = (props) => {
     const initialize =useCallback(async ():Promise<void> => {
         try {
             const accessToken = globalThis.localStorage.getItem('access_token');
+            
             if (accessToken) {
                  const userResponse = await fetch("https://api.escuelajs.co/api/v1/auth/profile", {
                         method: 'GET',
@@ -121,9 +118,10 @@ export const  AuthProvider: FC<AuthProviderProps> = (props) => {
                     globalThis.localStorage.setItem('user', JSON.stringify(userResult));
 
                     dispatch({
-                        type: ActionTypes.SIGN_IN,
+                        type: ActionTypes.INITIALIZE,
                         payload: {
-                            user: userResult
+                            user: userResult,
+                            isAuthenticated:true,
                         }
                     });
             } else {
@@ -179,6 +177,7 @@ export const  AuthProvider: FC<AuthProviderProps> = (props) => {
                 Authorization: 'Bearer ' + result?.access_token
             }
         });
+
         const userResult = await userResponse.json();
         globalThis.localStorage.setItem('user', JSON.stringify(userResult));
 
