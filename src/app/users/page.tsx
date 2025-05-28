@@ -35,6 +35,8 @@ export default function UserPage() {
   const [editingUserId, setEditingUserId] = useState<number | null>(null);
   const [editData, setEditData] = useState<{ name?: string; email?: string }>({});
 
+  const isEditable = (user: User) => user.id > 100;
+
   useEffect(() => {
     const getUsers = async () => {
       setLoading(true);
@@ -207,48 +209,51 @@ export default function UserPage() {
               </CardContent>
 
               <CardFooter className="flex justify-between items-center gap-2">
-                {editingUserId === user.id ? (
-                  <>
-                    <button
-                      onClick={handleSaveEdit}
-                      className="text-green-600 text-sm"
-                    >
-                      Save
-                    </button>
-                    <button
-                      onClick={() => {
-                        setEditingUserId(null);
-                        setEditData({});
-                      }}
-                      className="text-gray-600 text-sm"
-                    >
-                      Cancel
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <p>{user.role}</p>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => {
-                          setEditingUserId(user.id);
-                          setEditData({
-                            name: user.name,
-                            email: user.email,
-                          });
-                        }}
-                        className="text-blue-600 text-sm"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDeleteUser(user.id)}
-                        className="text-red-600 text-sm"
-                      >
-                        Supprimer
-                      </button>
-                    </div>
-                  </>
+                <p>{user.role || 'Rôle non défini'}</p>
+
+                {isEditable(user) && (
+                  <div className="flex gap-2">
+                    {editingUserId === user.id ? (
+                      <>
+                        <button
+                          onClick={handleSaveEdit}
+                          className="text-green-600 text-sm"
+                        >
+                          Save
+                        </button>
+                        <button
+                          onClick={() => {
+                            setEditingUserId(null);
+                            setEditData({});
+                          }}
+                          className="text-gray-600 text-sm"
+                        >
+                          Cancel
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => {
+                            setEditingUserId(user.id);
+                            setEditData({
+                              name: user.name,
+                              email: user.email,
+                            });
+                          }}
+                          className="text-blue-600 text-sm"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDeleteUser(user.id)}
+                          className="text-red-600 text-sm"
+                        >
+                          Supprimer
+                        </button>
+                      </>
+                    )}
+                  </div>
                 )}
               </CardFooter>
             </Card>
