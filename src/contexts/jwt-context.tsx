@@ -191,7 +191,12 @@ export const  AuthProvider: FC<AuthProviderProps> = (props) => {
     }, [dispatch]);
 
  const signOut  = useCallback(async (): Promise<void> => {
-     console.log('normalement on déconnecte lutilisateur qui sappele clément le tueur de femmes et denfants')
+          globalThis.localStorage.removeItem('access_token');
+          globalThis.localStorage.removeItem('user');
+     
+          dispatch({
+            type: ActionTypes.SIGN_OUT //on va reset, pas besoin de payload. C'est vide dans handlers.
+          });
 }, [dispatch])
     
  return (

@@ -29,7 +29,7 @@ import { Input } from "@/components/ui/input";
 import  { useAuth } from '@/hooks/use-auth';
 import { AuthContext } from "@/contexts/jwt-context";
 import { useContext } from "react";
-
+import { useEffect } from "react";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -42,20 +42,18 @@ export function LoginForm({
 }: React.ComponentPropsWithoutRef<"div">) {
 
   const {isAuthenticated} = useContext(AuthContext);
+  const { signOut } = useAuth()
+  const router = useRouter();
 
-  if (isAuthenticated){
-    console.log("l'utilisateur est idéntifié")
-    const { signOut } = useAuth()
-    signOut();
-    return  
-      
-    
-      
-    
-  }
+  
+  useEffect(() => {
+    (async () => {
+      await signOut();
+    })();
+  }, []); 
+  
 
   const { signIn } = useAuth();
-  const router = useRouter()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
