@@ -32,6 +32,9 @@ export default function AvionPage() {
     try {
       const res = await fetch(`/api/flights?flight=${flightNo}`);
       const json = await res.json();
+      if (res.status === 401) {
+        throw new Error('Flight lookup currently unavailable (invalid API key).');
+      }
       if (json.error) throw new Error(json.error);
       setResult(json.data);
     } catch (err: any) {
