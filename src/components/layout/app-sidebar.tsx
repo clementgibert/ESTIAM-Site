@@ -24,6 +24,11 @@ const data = {
           url: "/users",
            isActive: false,
         },
+        {
+          title: "Flights",
+          url: "/avion",
+           isActive: false,
+        },
           {
           title: "Login",
           url: "/login",
