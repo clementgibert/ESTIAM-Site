@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input";
 import  { useAuth } from '@/hooks/use-auth';
+import { AuthContext } from "@/contexts/jwt-context";
+import { useContext } from "react";
 
 
 const formSchema = z.object({
@@ -38,6 +40,20 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+
+  const {isAuthenticated} = useContext(AuthContext);
+
+  if (isAuthenticated){
+    console.log("l'utilisateur est idéntifié")
+    const { signOut } = useAuth()
+    signOut();
+    return  
+      
+    
+      
+    
+  }
+
   const { signIn } = useAuth();
   const router = useRouter()
 
@@ -63,7 +79,7 @@ export function LoginForm({
       });
     }
   }
-
+  
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

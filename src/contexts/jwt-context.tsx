@@ -191,7 +191,7 @@ export const  AuthProvider: FC<AuthProviderProps> = (props) => {
     }, [dispatch]);
 
  const signOut  = useCallback(async (): Promise<void> => {
-     console.log('test')
+     console.log('normalement on déconnecte lutilisateur qui sappele clément le tueur de femmes et denfants')
 }, [dispatch])
     
  return (
