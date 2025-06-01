@@ -35,6 +35,8 @@ export default function UserPage() {
   const [editingUserId, setEditingUserId] = useState<number | null>(null);
   const [editData, setEditData] = useState<{ name?: string; email?: string }>({});
 
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
   const isEditable = (user: User) => user.id > 100;
 
   useEffect(() => {
@@ -55,6 +57,20 @@ export default function UserPage() {
 
   const handleAddUser = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const newErrors: { [key: string]: string } = {};
+    if (!newUser.name.trim()) newErrors.name = 'le nom est requis';
+    if (!newUser.email.trim()) newErrors.email = "l'email est requis";
+    if (!newUser.password.trim()) newErrors.password = 'le mot de passe est requis.';
+    if (!newUser.role.trim()) newErrors.role = 'le role est requis.';
+  
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setErrors({});
+
     try {
       const res = await fetch('https://api.escuelajs.co/api/v1/users/', {
         method: 'POST',
@@ -122,6 +138,10 @@ export default function UserPage() {
   return (
     <div className="p-4">
       {/* Formulaire d'ajout */}
+        {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+        {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+        {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+        {errors.role && <p className="text-red-500 text-sm">{errors.role}</p>}
       <form
         onSubmit={handleAddUser}
         className="p-4 border mb-6 rounded-md grid grid-cols-2 gap-2"
@@ -147,6 +167,7 @@ export default function UserPage() {
           onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
           className="p-2 border rounded"
         />
+  
         <input
           type="text"
           placeholder="Role"
@@ -154,6 +175,7 @@ export default function UserPage() {
           onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
           className="p-2 border rounded"
         />
+        
         <button
           type="submit"
           className="bg-blue-600 text-white rounded px-4 py-2 col-span-2"

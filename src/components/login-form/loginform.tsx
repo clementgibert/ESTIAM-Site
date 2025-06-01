@@ -48,7 +48,7 @@ export function LoginForm({
   
   useEffect(() => {
     (async () => {
-      await signOut();
+      await signOut(); // déconnecté l'utilisateur dès qu'il revient sur la page login.
     })();
   }, []); 
   
