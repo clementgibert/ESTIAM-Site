@@ -45,7 +45,7 @@ export default function UserPage() {
       try {
         const res = await fetch('https://api.escuelajs.co/api/v1/users');
         const json = await res.json();
-        setUsers(json);
+        setUsers(json.filter((u: User) => typeof u.id === 'number'));
       } catch (err) {
         console.error(err);
       } finally {
@@ -57,7 +57,7 @@ export default function UserPage() {
 
   const handleAddUser = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     const newErrors: { [key: string]: string } = {};
     if (!newUser.name.trim()) newErrors.name = 'le nom est requis';
     if (!newUser.email.trim()) newErrors.email = "l'email est requis";
@@ -68,25 +68,46 @@ export default function UserPage() {
       setErrors(newErrors);
       return;
     }
-
+  
     setErrors({});
-
+  
     try {
       const res = await fetch('https://api.escuelajs.co/api/v1/users/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...newUser,
+          name: newUser.name,
+          email: newUser.email,
+          password: newUser.password,
           avatar: DEFAULT_AVATAR,
         }),
       });
+  
+      if (!res.ok) {
+        const error = await res.text();
+        console.error('POST failed:', error);
+        return;
+      }
+  
       const created = await res.json();
+  
+      if (!created.id) {
+        //nextId grace à chatgpt.. Mais on regarde la longeur du string users, si > 0
+        //math.max() retourne la valeur maximum donnée, cad qu'on prend l'id le plus grand et on rajoute 1
+        //sinon on retourne 1.
+        const nextId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
+        created.id = nextId;
+      }
+  
+      created.role = newUser.role;
+  
       setUsers([...users, created]);
       setNewUser({ name: '', email: '', password: '', role: '' });
     } catch (err) {
-      console.error(err);
+      console.error('Error creating user:', err);
     }
   };
+  
 
   const handleDeleteUser = async (id: number) => {
     try {
